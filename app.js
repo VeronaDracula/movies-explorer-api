@@ -1,8 +1,14 @@
-
+//require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-// const bodyParser = require('body-parser');
-//const { celebrate, errors, Joi } = require('celebrate');
+const bodyParser = require('body-parser');
+const { celebrate, errors, Joi } = require('celebrate');
+const PathNotFound = require('./errors/path_not_found');
+const { internalServerError } = require('./utils/constants');
+//const { createUser, login } = require('./controllers/users');
+//const auth = require('./middlewares/auth');
+//const cors = require('./middlewares/cors');
+//const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 
 mongoose.connect('mongodb://localhost:27017/moviesdb', {
@@ -11,36 +17,59 @@ mongoose.connect('mongodb://localhost:27017/moviesdb', {
 
 const app = express();
 
-// app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-const { PORT = 3000 } = process.env;
+const { PORT = 3001 } = process.env;
+
+app.use((req, res, next) => {
+  req.user = {
+    _id: '61926333e81cad41e88f37cd',
+  };
+  next();
+});
 
 // app.use(requestLogger);
 //
 // app.use(cors);
 
-// app.use('/', require('./routes/users'));
-// app.use('/', require('./routes/movies'));
+// app.post('/signin', celebrate({
+//   body: Joi.object().keys({
+//     email: Joi.string().required().email(),
+//     password: Joi.string().required(),
+//   }),
+// }), login);
+// app.post('/signup', celebrate({
+//   body: Joi.object().keys({
+//     name: Joi.string().min(2).max(30),
+//     email: Joi.string().required().email(),
+//     password: Joi.string().required(),
+//   }),
+// }), createUser);
+//
+// app.use(auth);
 
-//app.use('*', (req, res, next) => next(new PathNotFound()));
+app.use('/', require('./routes/users'));
+app.use('/', require('./routes/movies'));
+
+app.use('*', (req, res, next) => next(new PathNotFound()));
 
 //app.use(errorLogger);
 
-// app.use(errors());
-//
-// app.use((err, req, res, next) => {
-//   if (!err.statusCode) {
-//     res
-//       .status(internalServerError)
-//       .send({ message: 'На сервере произошла ошибка' });
-//   } else {
-//     res
-//       .status(err.statusCode)
-//       .send({ message: err.message });
-//   }
-//   next();// линтер требует использовать next внутри функции
-// });
+app.use(errors());
+
+app.use((err, req, res, next) => {
+  if (!err.statusCode) {
+    res
+      .status(internalServerError)
+      .send({ message: 'На сервере произошла ошибка' });
+  } else {
+    res
+      .status(err.statusCode)
+      .send({ message: err.message });
+  }
+  next();
+});
 
 app.listen(PORT);
 
