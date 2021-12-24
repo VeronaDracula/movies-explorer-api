@@ -20,7 +20,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const { PORT = 3001 } = process.env;
+const { PORT = 3000 } = process.env;
 
 app.use(requestLogger);
 
