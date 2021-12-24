@@ -3,5 +3,5 @@ const secretKey = 'secret-key-7462548';
 
 module.exports = {
   mongoServer,
-  secretKey
+  secretKey,
 };

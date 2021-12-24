@@ -1,7 +1,7 @@
 // Массив доменов, с которых разрешены кросс-доменные запросы
 const allowedCors = [
-  'https://mesto.practicum.nomoredomains.rocks',
-  'http://mesto.practicum.nomoredomains.rocks',
+  'https://graduationproject.zenkova.nomoredomains.rocks',
+  'http://graduationproject.zenkova.nomoredomains.rocks',
   'localhost:3000',
   'http://localhost:3001',
 ];
