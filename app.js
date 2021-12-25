@@ -10,8 +10,9 @@ const { createUser, login } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 // const cors = require('./middlewares/cors');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const { NODE_ENV, DB_ADDRESS } = process.env;
 
-mongoose.connect(mongoServer, {
+mongoose.connect(NODE_ENV === 'production' ? DB_ADDRESS : mongoServer, {
   useNewUrlParser: true,
 });
 
