@@ -1,9 +1,8 @@
-class ExistingEmail extends Error {
-  constructor() {
-    super();
-    this.message = 'Пользователь с указанным email уже существует';
+class ConflictError extends Error {
+  constructor(message) {
+    super(message);
     this.statusCode = 409;
   }
 }
 
-module.exports = ExistingEmail;
+module.exports = ConflictError;

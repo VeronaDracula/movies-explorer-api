@@ -1,10 +1,12 @@
 const Movie = require('../models/movie');
-const MovieNotFound = require('../errors/movie_not_found');
+const NotFound = require('../errors/not_found');
 const Forbidden = require('../errors/forbidden');
 const IncorrectData = require('../errors/incorrect_data');
 const {
   ok,
   created,
+  movieNotFound,
+  forbidden,
 } = require('../utils/constants');
 
 // получение всех фильмов
@@ -19,10 +21,10 @@ const deleteMovie = (req, res, next) => {
   const { movieId } = req.params;
 
   Movie.findById(movieId)
-    .orFail(new MovieNotFound())
+    .orFail(new NotFound(movieNotFound))
     .then((movie) => {
       if (!movie.owner.equals(req.user._id)) {
-        return new Forbidden();
+        return new Forbidden(forbidden);
       }
       return movie.remove()
         .then(() => res

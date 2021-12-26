@@ -1,7 +1,9 @@
+const { incorrectData } = require('../utils/constants');
+
 class IncorrectData extends Error {
   constructor() {
     super();
-    this.message = 'Переданы некорректные данные';
+    this.message = incorrectData;
     this.statusCode = 400;
   }
 }

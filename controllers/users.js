@@ -2,13 +2,16 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const { secretKey } = require('../utils/config');
-const UserNotFound = require('../errors/user_not_found');
-const ExistingEmail = require('../errors/not_new_email');
-const Unauthorized = require('../errors/unauthorized');
+const NotFound = require('../errors/not_found');
+const ConflictError = require('../errors/not_new_email');
+const Forbidden = require('../errors/forbidden');
 const IncorrectData = require('../errors/incorrect_data');
 const {
   ok,
   created,
+  userNotFound,
+  existingEmail,
+  incorrectEmailPassword
 } = require('../utils/constants');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
@@ -22,7 +25,7 @@ const login = (req, res, next) => {
       res.send({ token });
     })
     .catch(() => {
-      next(new Unauthorized());
+      next(new Forbidden(incorrectEmailPassword));
     });
 };
 
@@ -46,7 +49,7 @@ const createUser = (req, res, next) => {
       .then((user) => res.status(created).send(user))
       .catch((err) => {
         if (err.name === 'MongoServerError' && err.code === 11000) {
-          next(new ExistingEmail());
+          next(new ConflictError(existingEmail));
         }
         if (err.name === 'ValidationError') {
           next(new IncorrectData());
@@ -67,9 +70,12 @@ const updateUser = (req, res, next) => {
           .status(ok)
           .send(user);
       }
-      throw new UserNotFound();
+      throw new NotFound(userNotFound);
     })
     .catch((err) => {
+      if (err.name === 'MongoServerError' && err.code === 11000) {
+        next(new ConflictError(existingEmail));
+      }
       if (err.name === 'ValidationError') {
         next(new IncorrectData());
       } else {
