@@ -4,7 +4,7 @@ const User = require('../models/user');
 const { secretKey } = require('../utils/config');
 const NotFound = require('../errors/not_found');
 const ConflictError = require('../errors/not_new_email');
-const Forbidden = require('../errors/forbidden');
+const Unauthorized = require('../errors/unauthorized');
 const IncorrectData = require('../errors/incorrect_data');
 const {
   ok,
@@ -25,7 +25,7 @@ const login = (req, res, next) => {
       res.send({ token });
     })
     .catch(() => {
-      next(new Forbidden(incorrectEmailPassword));
+      next(new Unauthorized(incorrectEmailPassword));
     });
 };
 
