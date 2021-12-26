@@ -11,7 +11,7 @@ const {
   created,
   userNotFound,
   existingEmail,
-  incorrectEmailPassword
+  incorrectEmailPassword,
 } = require('../utils/constants');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
