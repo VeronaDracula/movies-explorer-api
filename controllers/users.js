@@ -48,7 +48,7 @@ const createUser = (req, res, next) => {
     })
       .then((user) => res.status(created).send(user))
       .catch((err) => {
-        if (err.name === 'MongoServerError' && err.code === 11000) {
+        if (err.code === 11000) {
           next(new ConflictError(existingEmail));
         }
         if (err.name === 'ValidationError') {
@@ -73,7 +73,7 @@ const updateUser = (req, res, next) => {
       throw new NotFound(userNotFound);
     })
     .catch((err) => {
-      if (err.name === 'MongoServerError' && err.code === 11000) {
+      if (err.code === 11000) {
         next(new ConflictError(existingEmail));
       }
       if (err.name === 'ValidationError') {
