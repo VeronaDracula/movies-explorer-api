@@ -7,7 +7,7 @@ const NotFound = require('./errors/not_found');
 const { internalServerError, pathNotFound, serverError } = require('./utils/constants');
 const { mongoServer } = require('./utils/config');
 const auth = require('./middlewares/auth');
-// const cors = require('./middlewares/cors');
+const cors = require('./middlewares/cors');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const { NODE_ENV, DB_ADDRESS } = process.env;
@@ -25,7 +25,7 @@ const { PORT = 3000 } = process.env;
 
 app.use(requestLogger);
 
-// app.use(cors);
+app.use(cors);
 
 app.use(require('./routes/without_authorization'));
 
